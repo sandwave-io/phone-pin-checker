@@ -1,0 +1,11 @@
+{
+    "name": "sw-stephan/phone-pin-checker",
+    "description": "Check VIP phone caller code with repository",
+    "authors": [
+        {
+            "name": "Stephan van der Horn",
+            "email": "stephan@sandwave.io"
+        }
+    ],
+    "require": {}
+}
