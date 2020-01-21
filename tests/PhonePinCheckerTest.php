@@ -2,7 +2,7 @@
 
 use Sandwave\PhonePinChecker\PhonePinChecker;
 
-class OriginMatcherTest extends PHPUnit_Framework_TestCase
+class PhonePinCheckerTest extends PHPUnit_Framework_TestCase
 {
     public function testCreate()
     {
