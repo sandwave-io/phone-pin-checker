@@ -15,5 +15,7 @@
         "psr-4": {
             "Sandwave\\PhonePinChecker\\": "src"
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
