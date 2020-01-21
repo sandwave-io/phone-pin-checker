@@ -26,14 +26,12 @@ class OriginMatcherTest extends PHPUnit_Framework_TestCase
     {
         $checker = new PhonePinChecker;
 
-        $code = $checker->create();
+        $code = $checker->create("1234");
 
-        $result = $checker->check($code['code']);
-
+        $result = $checker->check("1234");
         $this->assertTrue($result);
 
-        $result = $checker->check($code['code']);
-
+        $result = $checker->check("4321");
         $this->assertFalse($result);
     }
 }
