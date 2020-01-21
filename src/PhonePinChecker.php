@@ -18,7 +18,7 @@ class PhonePinChecker
     {
         $expire = Carbon::now()->addSeconds($this->expire);
 
-        $code = 'test';
+        $code = (string) rand(0, 9999);
 
         $model = [
             'code' => $code,

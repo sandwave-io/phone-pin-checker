@@ -1,9 +1,10 @@
 <?php
 
-namespace Sandwave\Http\Controllers;
+namespace Sandwave\PhonePinChecker\Http\Controllers;
 
 use Illuminate\Routing\Controller;
 use Sandwave\PhonePinChecker\PhonePinChecker;
+use Sandwave\PhonePinChecker\Http\Requests\CheckRequest;
 
 class PhonePinCheckerController extends Controller
 {
