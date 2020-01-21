@@ -14,27 +14,31 @@ class PhonePinChecker
         $this->expire = $expire;
     }
 
-    public function create()
+    public function create($pin = null)
     {
         $expire = Carbon::now()->addSeconds($this->expire);
 
-        $code = (string) rand(0, 9999);
+        if (! $pin) {
+            $pin = (string) rand(1000, 9999);
+        }
+
+        $this->expire = 3600;
 
         $model = [
-            'code' => $code,
+            'pin' => $pin,
             'expire' => $expire
         ];
 
-        Cache::put("phonepinchecker.{$code}", $model, $expire);
+        Cache::put("phonepinchecker.{$pin}", $model, $this->expire);
 
         return $model;
     }
 
-    public function check(string $code) : bool
+    public function check(string $pin) : bool
     {
-        $check = Cache::get("phonepinchecker.{$code}");
+        $check = Cache::get("phonepinchecker.{$pin}");
 
-        if ($check['code'] === $code) {
+        if ($check['pin'] === $pin) {
             return true;
         }
 

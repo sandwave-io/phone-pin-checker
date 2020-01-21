@@ -24,11 +24,12 @@ class PhonePinCheckerController extends Controller
      * Show the profile for the given user.
      *
      * @param  CheckRequest  $request
+     * @param  string        $code
      * @return string
      */
-    public function check(CheckRequest $request)
+    public function check(CheckRequest $request, $code)
     {
-        $valid = app(PhonePinChecker::class)->check($request->code);
+        $valid = app(PhonePinChecker::class)->check($code);
 
         $return = '';
 
@@ -38,6 +39,6 @@ class PhonePinCheckerController extends Controller
             $return = 'NAK';
         }
 
-        return $return;
+        return 'status='.$return;
     }
 }
