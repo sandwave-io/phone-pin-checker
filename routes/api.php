@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::group(['middlware' => config('phone-pin-checker.middleware')], function () {
+Route::group(['middleware' => config('phone-pin-checker.middleware')], function () {
     Route::post('phone-pin-checker', 'Sandwave\PhonePinChecker\Http\Controllers\PhonePinCheckerController@create')
         ->name('phone-pin-checker.create');
 
