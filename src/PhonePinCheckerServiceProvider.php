@@ -15,7 +15,7 @@ class PhonePinCheckerServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton(PhonePinChecker::class, function ($app) {
-            return new PhonePinChecker(config('phone-pin-checker.expire'));
+            return new PhonePinChecker(app('cache'), config('phone-pin-checker.expire'));
         });
 
         $this->mergeConfigFrom(

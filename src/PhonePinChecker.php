@@ -3,23 +3,29 @@
 namespace Sandwave\PhonePinChecker;
 
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Cache\CacheManager;
 
 class PhonePinChecker
 {
-    public $expire;
+    /**
+     * @var int
+     */
+    private $expire;
 
-    public function __construct($expire = 3600)
+    private $cache;
+
+    public function __construct(CacheManager $cacheDriver, int $expire = 3600)
     {
+        $this->cache = $cacheDriver;
         $this->expire = $expire;
     }
 
-    public function create($pin = null)
+    public function create(?int $pin = null) : array
     {
         $expire = Carbon::now()->addSeconds($this->expire);
 
         if (! $pin) {
-            $pin = (string) rand(1000, 9999);
+            $pin = rand(1000, 9999);
         }
 
         $this->expire = 3600;
@@ -29,16 +35,16 @@ class PhonePinChecker
             'expire' => $expire
         ];
 
-        Cache::put("phonepinchecker.{$pin}", $model, $this->expire);
+        $this->cache->put("phonepinchecker.{$pin}", $model, $this->expire);
 
         return $model;
     }
 
-    public function check(string $pin) : bool
+    public function check(int $pin) : bool
     {
-        $check = Cache::get("phonepinchecker.{$pin}");
+        $check = $this->cache->get("phonepinchecker.{$pin}");
 
-        if ($check['pin'] === $pin) {
+        if ($check && $check['pin'] === $pin) {
             return true;
         }
 
