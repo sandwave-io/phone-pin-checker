@@ -32,7 +32,7 @@ class PhonePinChecker
 
         $model = [
             'pin' => $pin,
-            'expire' => $expire
+            'expire' => $expire->toISO8601String()
         ];
 
         $this->cache->put("phonepinchecker.{$pin}", $model, $this->expire);
