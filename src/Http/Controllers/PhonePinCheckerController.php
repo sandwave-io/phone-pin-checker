@@ -31,7 +31,7 @@ class PhonePinCheckerController extends Controller
      * Show the profile for the given user.
      *
      * @param  CheckRequest  $request
-     * @return string
+     * @return \Illuminate\Http\Response|\Illuminate\Contracts\Routing\ResponseFactory
      */
     public function check(CheckRequest $request)
     {
@@ -53,6 +53,7 @@ class PhonePinCheckerController extends Controller
             $return = 'NAK';
         }
 
-        return 'status='.$return;
+        return response('status='.$return, 200)
+            ->header('Content-Type', 'text/plain');
     }
 }
