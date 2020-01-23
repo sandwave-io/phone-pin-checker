@@ -12,15 +12,31 @@ class PhonePinChecker
      */
     private $expire;
 
+    /**
+     * @var CacheManager
+     */
     private $cache;
 
+    /**
+     * PhonePinChecker constructor.
+     *
+     * @param CacheManager $cacheDriver
+     * @param int $expire
+     */
     public function __construct(CacheManager $cacheDriver, int $expire = 3600)
     {
         $this->cache = $cacheDriver;
         $this->expire = $expire;
     }
 
-    public function create(?int $pin = null) : array
+    /**
+     * Create new pincode.
+     *
+     * @param int|null $pin
+     * @param array|null $optionalData
+     * @return array
+     */
+    public function create(?int $pin, ?array $optionalData) : array
     {
         $expire = Carbon::now()->addSeconds($this->expire);
 
@@ -32,7 +48,8 @@ class PhonePinChecker
 
         $model = [
             'pin' => $pin,
-            'expire' => $expire->toISO8601String()
+            'expire' => $expire->toISO8601String(),
+            'optional_data' => $optionalData
         ];
 
         $this->cache->put("phonepinchecker.{$pin}", $model, $this->expire);
@@ -40,14 +57,20 @@ class PhonePinChecker
         return $model;
     }
 
-    public function check(int $pin) : bool
+    /**
+     * Check pincode.
+     *
+     * @param int $pin
+     * @return array|null
+     */
+    public function check(int $pin) : ?array
     {
         $check = $this->cache->get("phonepinchecker.{$pin}");
 
         if ($check && $check['pin'] === $pin) {
-            return true;
+            return $check;
         }
 
-        return false;
+        return null;
     }
 }

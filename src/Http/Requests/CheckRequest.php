@@ -2,10 +2,20 @@
 
 namespace Sandwave\PhonePinChecker\Http\Requests;
 
-use Illuminate\Http\Request;
+use Illuminate\Foundation\Http\FormRequest;
 
-class CheckRequest extends Request
+class CheckRequest extends FormRequest
 {
+    /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool
+     */
+    public function authorize()
+    {
+        return true;
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -14,7 +24,22 @@ class CheckRequest extends Request
     public function rules()
     {
         return [
-            'code' => 'required|numeric',
+            'did'           => 'string', // called number
+            'callerid'      => 'required|string', // number calling
+            'callername'    => 'string',
+            'code'          => 'required|numeric',
         ];
+    }
+
+    /**
+     * New in L5.5, and required for those fancy middlewares.
+     *
+     * @see https://github.com/laravel/framework/blob/master/src/Illuminate/Http/Request.php#L471
+     */
+    public function setJson($json)
+    {
+        $this->json = $json;
+
+        return $this;
     }
 }
