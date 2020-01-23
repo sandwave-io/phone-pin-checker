@@ -40,9 +40,7 @@ class PhonePinChecker
     {
         $expire = Carbon::now()->addSeconds($this->expire);
 
-        if (! $pin) {
-            $pin = rand(1000, 9999);
-        }
+        $pin = $this->getRandomPin($pin);
 
         $this->expire = 3600;
 
@@ -72,5 +70,28 @@ class PhonePinChecker
         }
 
         return null;
+    }
+
+    /**
+     * Generate random pin.
+     *
+     * @param int|null $pin
+     * @return int
+     */
+    private function getRandomPin(?int $pin)
+    {
+        if (! $pin) {
+            $pin = rand(1000, 9999);
+        }
+
+        // Check if exists
+        $exists = $this->cache->get("phonepinchecker.{$pin}");
+
+        if ($exists) {
+            // Recursive
+            $pin = $this->getRandomPin();
+        }
+
+        return $pin;
     }
 }

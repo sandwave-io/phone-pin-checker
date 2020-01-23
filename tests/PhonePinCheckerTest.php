@@ -10,8 +10,9 @@ class PhonePinCheckerTest extends TestCase
 {
     public function testCreate()
     {
-        $cache = m::mock(CacheManager::class);
+        $cache = m::mock(CacheManager::class)->shouldAllowMockingProtectedMethods();
         $cache->shouldReceive('put')->once();
+        $cache->shouldReceive('get')->once()->andReturn(false);
 
         $checker = new PhonePinChecker($cache);
 
