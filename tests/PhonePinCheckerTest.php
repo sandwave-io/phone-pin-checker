@@ -15,7 +15,7 @@ class PhonePinCheckerTest extends TestCase
 
         $checker = new PhonePinChecker($cache);
 
-        $code = $checker->create();
+        $code = $checker->create(null, null);
 
         // Between 1000 and 9999 (four digits)
         $this->assertGreaterThan(
@@ -32,29 +32,30 @@ class PhonePinCheckerTest extends TestCase
     public function testCheck()
     {
         $cache = m::mock(CacheManager::class)->shouldAllowMockingProtectedMethods();
-        $cache->shouldReceive('get')->once()->andReturn([
+
+        $model = [
             'pin' => 1234,
-            'expire' => Carbon::now()->addSeconds(3600)
-        ]);
+            'expire' => Carbon::now()->addSeconds(3600)->toIso8601String(),
+            'optional_data' => [
+                'account_id' => 'account_id_hier'
+            ]
+        ];
+
+        $cache->shouldReceive('get')->once()->andReturn($model);
         $checker = new PhonePinChecker($cache);
 
         $result = $checker->check(1234);
-        $this->assertTrue($result);
-
-        $result = $checker->check(4321);
-        $this->assertFalse($result);
+        $this->assertSame($result, $model);
     }
 
     public function testCheckNegative()
     {
         $cache = m::mock(CacheManager::class)->shouldAllowMockingProtectedMethods();
         $cache->shouldReceive('get')->once()->andReturn(null);
+
         $checker = new PhonePinChecker($cache);
 
-        $result = $checker->check(1234);
-        $this->assertFalse($result);
-
         $result = $checker->check(4321);
-        $this->assertFalse($result);
+        $this->assertNull($result);
     }
 }

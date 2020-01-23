@@ -36,7 +36,7 @@ class PhonePinChecker
      * @param array|null $optionalData
      * @return array
      */
-    public function create(?int $pin, ?array $optionalData) : array
+    public function create(?int $pin = null, ?array $optionalData = null) : array
     {
         $expire = Carbon::now()->addSeconds($this->expire);
 
