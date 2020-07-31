@@ -3,21 +3,22 @@
 namespace Sandwave\PhonePinChecker\Events;
 
 use Illuminate\Queue\SerializesModels;
+use Sandwave\PhonePinChecker\Domain\Authorization;
+use Sandwave\PhonePinChecker\Domain\IncomingCall;
 
 class PinOkay
 {
     use SerializesModels;
 
-    public $payload;
+    /** @var Authorization */
+    public $authorization;
 
-    /**
-     * Create a new event instance.
-     *
-     * @param  array  $payload
-     * @return void
-     */
-    public function __construct(array $payload)
+    /** @var IncomingCall */
+    public $call;
+
+    public function __construct(IncomingCall $call, Authorization $authorization)
     {
-        $this->payload = $payload;
+        $this->call = $call;
+        $this->authorization = $authorization;
     }
 }

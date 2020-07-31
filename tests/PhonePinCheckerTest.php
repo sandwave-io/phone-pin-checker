@@ -2,6 +2,7 @@
 
 use Carbon\Carbon;
 use PHPUnit\Framework\TestCase;
+use Sandwave\PhonePinChecker\Domain\Authorization;
 use Sandwave\PhonePinChecker\PhonePinChecker;
 use Mockery as m;
 use Illuminate\Cache\CacheManager;
@@ -16,37 +17,29 @@ class PhonePinCheckerTest extends TestCase
 
         $checker = new PhonePinChecker($cache);
 
-        $code = $checker->create(null, null);
+        $authorization = $checker->create(null, null);
 
         // Between 1000 and 9999 (four digits)
-        $this->assertGreaterThan(
-            999,
-            $code['pin']
-        );
-
-        $this->assertLessThan(
-            10000,
-            $code['pin']
-        );
+        $this->assertGreaterThan(999, $authorization->getPin());
+        $this->assertLessThan(10000, $authorization->getPin());
     }
 
     public function testCheck()
     {
+        $expiration = 1596203613;
         $cache = m::mock(CacheManager::class)->shouldAllowMockingProtectedMethods();
 
-        $model = [
-            'pin' => 1234,
-            'expire' => Carbon::now()->addSeconds(3600)->toIso8601String(),
-            'optional_data' => [
-                'account_id' => 'account_id_hier'
-            ]
-        ];
+        $authorization = new Authorization('1234', Carbon::createFromTimestamp(1596203613), 'account_id_here');
 
-        $cache->shouldReceive('get')->once()->andReturn($model);
+        $cache->shouldReceive('get')->once()->andReturn([
+            'pin'               => '1234',
+            'expire_timestamp'  => $expiration,
+            'reference'         => 'account_id_here'
+        ]);
         $checker = new PhonePinChecker($cache);
 
-        $result = $checker->check(1234);
-        $this->assertSame($result, $model);
+        $result = $checker->check("1234");
+        $this->assertSame($result->toArray(), $authorization->toArray());
     }
 
     public function testCheckNegative()
