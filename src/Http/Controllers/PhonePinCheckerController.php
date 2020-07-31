@@ -2,6 +2,7 @@
 
 namespace Sandwave\PhonePinChecker\Http\Controllers;
 
+use http\Exception\UnexpectedValueException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
@@ -56,7 +57,11 @@ class PhonePinCheckerController extends Controller
         // Depending on if an authorization is given, return these values.
         $status = ($authorization) ? 'ACK' : 'NAK';
 
-        return response('status=' . $status, 200)
-            ->header('Content-Type', 'text/plain');
+        $response = response('status=' . $status, 200);
+        if (! $response instanceof Response) {
+            throw new \RuntimeException("Cannot form response");
+        }
+
+        return $response->header('Content-Type', 'text/plain');
     }
 }

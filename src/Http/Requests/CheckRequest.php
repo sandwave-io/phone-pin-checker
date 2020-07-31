@@ -4,6 +4,12 @@ namespace Sandwave\PhonePinChecker\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * @property string $did
+ * @property string $callerid
+ * @property string $callername
+ * @property string $code
+ */
 class CheckRequest extends FormRequest
 {
     /**

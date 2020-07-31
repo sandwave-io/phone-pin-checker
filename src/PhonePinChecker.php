@@ -57,7 +57,7 @@ class PhonePinChecker
     private function getRandomPin(?string $pin = null): string
     {
         if (! $pin) {
-            $pin = rand(1000, 9999);
+            $pin = (string) rand(1000, 9999);
         }
 
         // Check if exists
@@ -68,7 +68,7 @@ class PhonePinChecker
             $pin = $this->getRandomPin();
         }
 
-        return (string) $pin;
+        return $pin;
     }
 
     private function getCacheKeyFromPin(string $pin): string

@@ -9,7 +9,7 @@ use Sandwave\PhonePinChecker\PhonePinChecker;
 
 class PhonePinCheckerTest extends TestCase
 {
-    public function testCreate()
+    public function testCreate(): void
     {
         $cache = m::mock(CacheManager::class)->shouldAllowMockingProtectedMethods();
         $cache->shouldReceive('put')->once();
@@ -24,7 +24,7 @@ class PhonePinCheckerTest extends TestCase
         $this->assertLessThan(10000, $authorization->getPin());
     }
 
-    public function testCheck()
+    public function testCheck(): void
     {
         $expiration = 1596203613;
         $cache = m::mock(CacheManager::class)->shouldAllowMockingProtectedMethods();
@@ -39,17 +39,21 @@ class PhonePinCheckerTest extends TestCase
         $checker = new PhonePinChecker($cache);
 
         $result = $checker->check('1234');
-        $this->assertSame($result->toArray(), $authorization->toArray());
+        if (! $result) {
+            $this->assertFalse(true, '$checker->check() returned null instead of an authorization.');
+        } else {
+            $this->assertSame($result->toArray(), $authorization->toArray());
+        }
     }
 
-    public function testCheckNegative()
+    public function testCheckNegative(): void
     {
         $cache = m::mock(CacheManager::class)->shouldAllowMockingProtectedMethods();
         $cache->shouldReceive('get')->once()->andReturn(null);
 
         $checker = new PhonePinChecker($cache);
 
-        $result = $checker->check(4321);
+        $result = $checker->check("4321");
         $this->assertNull($result);
     }
 }
