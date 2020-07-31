@@ -2,14 +2,26 @@
 
 namespace Sandwave\PhonePinChecker\Http\Controllers;
 
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Sandwave\PhonePinChecker\Domain\IncomingCall;
 use Sandwave\PhonePinChecker\Events\PinOkay;
 use Sandwave\PhonePinChecker\PhonePinChecker;
 use Sandwave\PhonePinChecker\Http\Requests\CheckRequest;
 
 class PhonePinCheckerController extends Controller
 {
+    /** @var PhonePinChecker */
+    private $checker;
+
+    public function __construct(PhonePinChecker $checker)
+    {
+        $this->checker = $checker;
+    }
+
     /**
      * Show the profile for the given user.
      *
@@ -18,42 +30,31 @@ class PhonePinCheckerController extends Controller
      */
     public function create(Request $request)
     {
-        $optionalData = $request->only(
-            config('phone-pin-checker.optional_data')
-        );
+        $authorization = $this->checker->create(null, $request->get('reference'));
 
-        $code = app(PhonePinChecker::class)->create(null, $optionalData);
-
-        return $code;
+        return $authorization->getPin();
     }
 
     /**
      * Show the profile for the given user.
      *
      * @param  CheckRequest  $request
-     * @return \Illuminate\Http\Response|\Illuminate\Contracts\Routing\ResponseFactory
+     * @return Application|Response|ResponseFactory
      */
     public function check(CheckRequest $request)
     {
-        $check = app(PhonePinChecker::class)->check($request->code);
+        $call = new IncomingCall($request->code, $request->callerid, $request->callername, $request->did);
 
-        $return = '';
+        $authorization = $this->checker->check($call->getCode());
 
-        if ($check) {
-            $return = 'ACK';
-
-            event(new PinOkay([
-                'did'           => $request->did,
-                'callerid'      => $request->callerid,
-                'callername'    => $request->callername,
-                'optional_data' => $check['optional_data'],
-                'expire'        => $check['expire'],
-            ]));
-        } else {
-            $return = 'NAK';
+        if ($authorization) {
+            event(new PinOkay($call, $authorization));
         }
 
-        return response('status='.$return, 200)
+        // Depending on if an authorization is given, return these values.
+        $status = ($authorization) ? 'ACK' : 'NAK';
+
+        return response('status='.$status, 200)
             ->header('Content-Type', 'text/plain');
     }
 }
