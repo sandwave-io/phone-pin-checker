@@ -1,8 +1,8 @@
-<?php
+<?php declare(strict_types = 1);
+
 namespace Sandwave\PhonePinChecker\Domain;
 
 use Carbon\Carbon;
-use DateTime;
 
 class Authorization
 {
@@ -42,7 +42,7 @@ class Authorization
         return [
             'pin'               => $this->pin,
             'expire_timestamp'  => $this->expiration->timestamp,
-            'reference'         => $this->reference
+            'reference'         => $this->reference,
         ];
     }
 

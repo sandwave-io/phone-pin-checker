@@ -1,0 +1,10 @@
+parameters:
+    checkGenericClassInNonGenericObjectType: false
+    checkMissingIterableValueType: false
+    level: 8
+    paths:
+        - src
+        - tests
+    ignoreErrors:
+        - '#Call to an undefined method Mockery\\ExpectationInterface|Mockery\\HigherOrderMessage::once\(\)#'
+        - '#Parameter \#1 \$cacheDriver of class Sandwave\\PhonePinChecker\\PhonePinChecker constructor expects Illuminate\\Cache\\CacheManager, Mockery\\Mock given.#'
