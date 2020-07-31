@@ -9,7 +9,10 @@
     ],
     "require": {
         "php": "^7.1.0",
-        "laravel/framework": "^5.3.31 || ^6.0.0"
+        "laravel/framework": "^5.3.31 || ^6.0.0",
+        "friendsofphp/php-cs-fixer": "^2.16",
+        "uptimeproject/php-cs-fixer-config": "^1.1",
+        "phpstan/phpstan": "^0.12.34"
     },
     "autoload": {
         "psr-4": {
