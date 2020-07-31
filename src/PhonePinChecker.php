@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace Sandwave\PhonePinChecker;
 
@@ -24,7 +24,7 @@ class PhonePinChecker
         $this->expire = $expire;
     }
 
-    public function create(?string $pin = null, ?string $reference = null) : Authorization
+    public function create(?string $pin = null, ?string $reference = null): Authorization
     {
         $expiration = Carbon::now()->addSeconds($this->expire);
 
@@ -39,7 +39,7 @@ class PhonePinChecker
         return $authorization;
     }
 
-    public function check(string $pin) : ?Authorization
+    public function check(string $pin): ?Authorization
     {
         $data = $this->cache->get($this->getCacheKeyFromPin($pin));
         if (! is_array($data)) {

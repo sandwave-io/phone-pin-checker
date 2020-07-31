@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace Sandwave\PhonePinChecker\Http\Controllers;
 
@@ -9,8 +9,8 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Sandwave\PhonePinChecker\Domain\IncomingCall;
 use Sandwave\PhonePinChecker\Events\PinOkay;
-use Sandwave\PhonePinChecker\PhonePinChecker;
 use Sandwave\PhonePinChecker\Http\Requests\CheckRequest;
+use Sandwave\PhonePinChecker\PhonePinChecker;
 
 class PhonePinCheckerController extends Controller
 {
@@ -25,7 +25,8 @@ class PhonePinCheckerController extends Controller
     /**
      * Show the profile for the given user.
      *
-     * @param  Request  $request
+     * @param Request $request
+     *
      * @return string
      */
     public function create(Request $request)
@@ -38,7 +39,8 @@ class PhonePinCheckerController extends Controller
     /**
      * Show the profile for the given user.
      *
-     * @param  CheckRequest  $request
+     * @param CheckRequest $request
+     *
      * @return Application|Response|ResponseFactory
      */
     public function check(CheckRequest $request)
@@ -54,7 +56,7 @@ class PhonePinCheckerController extends Controller
         // Depending on if an authorization is given, return these values.
         $status = ($authorization) ? 'ACK' : 'NAK';
 
-        return response('status='.$status, 200)
+        return response('status=' . $status, 200)
             ->header('Content-Type', 'text/plain');
     }
 }

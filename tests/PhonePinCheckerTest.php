@@ -1,11 +1,11 @@
-<?php
+<?php declare(strict_types = 1);
 
 use Carbon\Carbon;
+use Illuminate\Cache\CacheManager;
+use Mockery as m;
 use PHPUnit\Framework\TestCase;
 use Sandwave\PhonePinChecker\Domain\Authorization;
 use Sandwave\PhonePinChecker\PhonePinChecker;
-use Mockery as m;
-use Illuminate\Cache\CacheManager;
 
 class PhonePinCheckerTest extends TestCase
 {
@@ -34,11 +34,11 @@ class PhonePinCheckerTest extends TestCase
         $cache->shouldReceive('get')->once()->andReturn([
             'pin'               => '1234',
             'expire_timestamp'  => $expiration,
-            'reference'         => 'account_id_here'
+            'reference'         => 'account_id_here',
         ]);
         $checker = new PhonePinChecker($cache);
 
-        $result = $checker->check("1234");
+        $result = $checker->check('1234');
         $this->assertSame($result->toArray(), $authorization->toArray());
     }
 

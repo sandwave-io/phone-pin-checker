@@ -1,9 +1,8 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace Sandwave\PhonePinChecker;
 
 use Illuminate\Support\ServiceProvider;
-use Sandwave\PhonePinChecker\PhonePinChecker;
 
 class PhonePinCheckerServiceProvider extends ServiceProvider
 {
@@ -19,7 +18,8 @@ class PhonePinCheckerServiceProvider extends ServiceProvider
         });
 
         $this->mergeConfigFrom(
-            __DIR__.'/../config/phone-pin-checker.php', 'phone-pin-checker'
+            __DIR__ . '/../config/phone-pin-checker.php',
+            'phone-pin-checker'
         );
     }
 
@@ -31,9 +31,9 @@ class PhonePinCheckerServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__.'/../config/phone-pin-checker.php' => config_path('phone-pin-checker.php'),
+            __DIR__ . '/../config/phone-pin-checker.php' => config_path('phone-pin-checker.php'),
         ]);
 
-        $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
+        $this->loadRoutesFrom(__DIR__ . '/../routes/api.php');
     }
 }
