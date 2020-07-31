@@ -4,6 +4,7 @@ namespace Sandwave\PhonePinChecker;
 
 use Carbon\Carbon;
 use Illuminate\Cache\CacheManager;
+use Sandwave\PhonePinChecker\Domain\Authorization;
 
 class PhonePinChecker
 {
@@ -17,81 +18,61 @@ class PhonePinChecker
      */
     private $cache;
 
-    /**
-     * PhonePinChecker constructor.
-     *
-     * @param CacheManager $cacheDriver
-     * @param int $expire
-     */
     public function __construct(CacheManager $cacheDriver, int $expire = 3600)
     {
         $this->cache = $cacheDriver;
         $this->expire = $expire;
     }
 
-    /**
-     * Create new pincode.
-     *
-     * @param int|null $pin
-     * @param array|null $optionalData
-     * @return array
-     */
-    public function create(?int $pin = null, ?array $optionalData = null) : array
+    public function create(?string $pin = null, ?string $reference = null) : Authorization
     {
-        $expire = Carbon::now()->addSeconds($this->expire);
+        $expiration = Carbon::now()->addSeconds($this->expire);
 
         $pin = $this->getRandomPin($pin);
 
         $this->expire = 3600;
 
-        $model = [
-            'pin' => $pin,
-            'expire' => $expire->toISO8601String(),
-            'optional_data' => $optionalData
-        ];
+        $authorization = new Authorization($pin, $expiration, $reference);
 
-        $this->cache->put("phonepinchecker.{$pin}", $model, $this->expire);
+        $this->cache->put($this->getCacheKeyFromPin($pin), $authorization->toArray(), $this->expire);
 
-        return $model;
+        return $authorization;
     }
 
-    /**
-     * Check pincode.
-     *
-     * @param int $pin
-     * @return array|null
-     */
-    public function check(int $pin) : ?array
+    public function check(string $pin) : ?Authorization
     {
-        $check = $this->cache->get("phonepinchecker.{$pin}");
+        $data = $this->cache->get($this->getCacheKeyFromPin($pin));
+        if (! is_array($data)) {
+            return null;
+        }
+        $authorization = Authorization::fromArray($data);
 
-        if ($check && $check['pin'] === $pin) {
-            return $check;
+        if ($authorization->getPin() === $pin) {
+            return $authorization;
         }
 
         return null;
     }
 
-    /**
-     * Generate random pin.
-     *
-     * @param int|null $pin
-     * @return int
-     */
-    private function getRandomPin(?int $pin)
+    private function getRandomPin(?string $pin = null): string
     {
         if (! $pin) {
             $pin = rand(1000, 9999);
         }
 
         // Check if exists
-        $exists = $this->cache->get("phonepinchecker.{$pin}");
+        $exists = $this->cache->get($this->getCacheKeyFromPin($pin));
 
         if ($exists) {
             // Recursive
             $pin = $this->getRandomPin();
         }
 
-        return $pin;
+        return (string) $pin;
+    }
+
+    private function getCacheKeyFromPin(string $pin): string
+    {
+        return "phonepinchecker.{$pin}";
     }
 }
