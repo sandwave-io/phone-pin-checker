@@ -14,7 +14,7 @@
     ],
     "require": {
         "php": "^7.1.0",
-        "laravel/framework": "^5.3.31 || ^6.0.0",
+        "laravel/framework": "^5.3.31 || ^6.18.35",
         "nesbot/carbon": "^2.37"
     },
     "autoload": {
