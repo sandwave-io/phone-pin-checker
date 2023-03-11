@@ -2,7 +2,6 @@
 
 namespace Sandwave\PhonePinChecker\Http\Controllers;
 
-use http\Exception\UnexpectedValueException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
@@ -59,7 +58,7 @@ class PhonePinCheckerController extends Controller
 
         $response = response('status=' . $status, 200);
         if (! $response instanceof Response) {
-            throw new \RuntimeException("Cannot form response");
+            throw new \RuntimeException('Cannot form response');
         }
 
         return $response->header('Content-Type', 'text/plain');

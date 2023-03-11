@@ -53,7 +53,7 @@ class PhonePinCheckerTest extends TestCase
 
         $checker = new PhonePinChecker($cache);
 
-        $result = $checker->check("4321");
+        $result = $checker->check('4321');
         $this->assertNull($result);
     }
 }
