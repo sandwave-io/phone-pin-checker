@@ -11,8 +11,8 @@ Verify generated PINs in order to implement your VIP phone support with Voys.
 This package is based on the Voys API.
 
 ## Compatibility
-* PHP `>7.1`
-* Laravel `5.3 | ^6.0`
+* PHP `>8.1`
+* Laravel `^10.3.3`
 
 ## How to use
 
